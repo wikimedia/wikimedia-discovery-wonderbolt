@@ -12,8 +12,8 @@ read_traffic <- function(){
   
   # Read in the initial data and format.
   data <- as.data.table(polloi::read_dataset(path = "external_traffic/referer_data.tsv"))
-  data$is_search <- ifelse(data$is_search, "Referred by search", "Other")
-  
+  data$is_search <- ifelse(data$is_search, "Referred by search", "Not referred by search")
+  data$search_engine[data$search_engine == "None"] <- "Not referred by search"
   # Write out the overall values for traffic
   holding <- data[,j=list(pageviews = sum(pageviews)), by = c("timestamp", "is_search", "access_method")]
   holding <- split(holding, f = holding$access_method)
