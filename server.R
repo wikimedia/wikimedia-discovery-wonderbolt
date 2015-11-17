@@ -32,4 +32,14 @@ shinyServer(function(input, output){
                            title = "Pageviews from external search engines, broken down by engine") %>%
       dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always")
   })
+  
+  # Check datasets for missing data and notify user which datasets are missing data (if any)
+  output$message_menu <- renderMenu({
+    notifications <- list(
+      polloi::check_yesterday(summary_traffic_data[['All']], "referrer data"),
+      polloi::check_past_week(summary_traffic_data[['All']], "referrer data"))
+    notifications <- notifications[!sapply(notifications, is.null)]
+    return(dropdownMenu(type = "notifications", .list = notifications))
+  })
+  
 })

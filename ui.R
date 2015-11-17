@@ -3,7 +3,7 @@ library(shinydashboard)
 library(dygraphs)
 
 #Header elements for the visualisation
-header <- dashboardHeader(title = "External Search Traffic", disable = FALSE)
+header <- dashboardHeader(title = "External Search Traffic", dropdownMenuOutput("message_menu"), disable = FALSE)
 
 sidebar <- dashboardSidebar(
   tags$head(
