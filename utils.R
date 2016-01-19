@@ -11,7 +11,7 @@ read_traffic <- function() {
     as.data.table
   
   # Deduplicate
-  data <- data[!duplicated(data[,1:(ncol(data) - 1), with=FALSE])]
+  data <- data[!duplicated(data[,1:(ncol(data) - 1), with=FALSE], fromLast = TRUE)]
   
   # Format
   data$is_search <- ifelse(data$is_search, "Referred by search", "Not referred by search")
