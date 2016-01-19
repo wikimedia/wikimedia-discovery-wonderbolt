@@ -1,13 +1,19 @@
 library(polloi)
 library(data.table)
+library(dplyr)
 
 # Read in the traffic data
 read_traffic <- function() {
   
-  # Read in the initial data and format.
+  # Read in the initial data.
   data <- polloi::read_dataset(path = "external_traffic/referer_data.tsv") %>%
     dplyr::rename(date = timestamp) %>%
     as.data.table
+  
+  # Deduplicate
+  data <- data[!duplicated(data[,1:(ncol(data) - 1), with=FALSE])]
+  
+  # Format
   data$is_search <- ifelse(data$is_search, "Referred by search", "Not referred by search")
   data$search_engine[data$search_engine == "None"] <- "Not referred by search"
   
