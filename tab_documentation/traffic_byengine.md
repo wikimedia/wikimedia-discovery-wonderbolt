@@ -3,7 +3,7 @@ Traffic from external search engines, broken down
 
 A key metric in understanding the role external search engines play in Wikipedia's readership and content discovery processes is a very direct one - how many pageviews we get from them. This can be discovered very simply by looking at our request logs.
 
-This dashboard simply breaks down the [http://discovery.wmflabs.org/external/#traffic_summary](summary data) to investigate how much traffic is coming from each search engine, individually. As you can see, Google dominates, which is why we've included the option of log-scaling
+This dashboard simply breaks down the [summary data](http://discovery.wmflabs.org/external/#traffic_summary) to investigate how much traffic is coming from each search engine, individually. As you can see, Google dominates, which is why we've included the option of log-scaling
 the traffic.
 
 General trends
