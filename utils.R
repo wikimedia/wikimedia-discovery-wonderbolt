@@ -15,7 +15,7 @@ read_traffic <- function() {
   
   # Format
   data$is_search <- ifelse(data$is_search, "Referred by search", "Not referred by search")
-  data$search_engine[data$search_engine == "None"] <- "Not referred by search"
+  data$search_engine[data$search_engine %in% c("none","None")] <- "Not referred by search"
   
   # Write out the overall values for traffic
   holding <- data[, j = list(pageviews = sum(pageviews)),
