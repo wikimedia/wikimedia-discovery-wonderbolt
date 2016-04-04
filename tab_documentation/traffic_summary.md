@@ -9,9 +9,9 @@ This dashboard simply looks at, very broadly, where our requests are coming from
 General trends
 ------
 
-Outages and inaccuracies
+Outages and notes
 ------
-None so far!
+- **A**: We switched to a finalized version of the UDF that extracts internal traffic (see [T130083](https://phabricator.wikimedia.org/T130083))
 
 Questions, bug reports, and feature suggestions
 ------

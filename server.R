@@ -19,8 +19,10 @@ shinyServer(function(input, output){
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_summary)) %>%
       polloi::subset_by_date_range(time_frame_range(input$traffic_summary_timeframe, input$traffic_summary_timeframe_daterange)) %>%
       polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
-                           title = "Pageviews from external search engines") %>%
-      dyLegend(labelsDiv = "traffic_summary_legend", show = "always")
+                           title = "Sources of page views (e.g. search engines and internal referers)") %>%
+      dyLegend(labelsDiv = "traffic_summary_legend", show = "always") %>%
+      dyAnnotation(x = as.Date("2016-03-07"), text = "A",
+                   tooltip = "Switched to a new UDF")
   })
   
   output$traffic_bysearch_dygraph <- renderDygraph({
