@@ -6,8 +6,7 @@ A key metric in understanding the role external search engines play in Wikipedia
 This dashboard simply looks at, very broadly, where our requests are coming from - search engines or something else? It is split up into
 "all", "desktop" and "mobile web" platforms - but not apps, since the apps do not log referers.
 
-General trends
-------
+**Internal** is traffic referred by Wikimedia sites, specifically: mediawiki.org, wikibooks.org, wikidata.org, wikinews.org, wikimedia.org, wikimediafoundation.org, wikipedia.org, wikiquote.org, wikisource.org, wikiversity.org, wikivoyage.org, and wiktionary.org (See [Webrequest source](https://git.wikimedia.org/blob/analytics%2Frefinery%2Fsource.git/master/refinery-core%2Fsrc%2Fmain%2Fjava%2Forg%2Fwikimedia%2Fanalytics%2Frefinery%2Fcore%2FWebrequest.java#L203) for more information.)
 
 Outages and notes
 ------
