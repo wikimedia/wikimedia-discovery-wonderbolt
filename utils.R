@@ -46,10 +46,3 @@ read_traffic <- function() {
   
   return(invisible())
 }
-
-logscale <- function(data, logscale_setting){
-  if (logscale_setting) {
-    return(cbind(date = data$date, as.data.frame(apply(data[, 2:ncol(data)], 2, log10))))
-  }
-  return(data)
-}

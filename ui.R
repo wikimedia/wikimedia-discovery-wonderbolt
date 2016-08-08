@@ -48,8 +48,9 @@ body <- dashboardBody(
     ),
     tabItem(tabName = "traffic_by_engine",
             fluidRow(
-              column(platform_select("platform_traffic_bysearch"), width = 2),
-              column(checkboxInput("platform_traffic_bysearch_log", label = "Log10 Scale", value = FALSE), width = 1),
+              column(platform_select("platform_traffic_bysearch"),
+                     checkboxInput("platform_traffic_bysearch_log", label = "Use Log scale", value = FALSE),
+                     width = 3),
               column(polloi::smooth_select("smoothing_traffic_bysearch"), width = 3),
               column(polloi::timeframe_select("traffic_bysearch_timeframe"), width = 3),
               column(polloi::timeframe_daterange("traffic_bysearch_timeframe"), width = 3)),

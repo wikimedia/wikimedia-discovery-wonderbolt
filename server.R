@@ -21,18 +21,19 @@ shinyServer(function(input, output){
       polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
                            title = "Sources of page views (e.g. search engines and internal referers)") %>%
       dyLegend(labelsDiv = "traffic_summary_legend", show = "always") %>%
-      dyAnnotation(x = as.Date("2016-03-07"), text = "A",
-                   tooltip = "Switched to a new UDF")
+      dyRangeSelector %>%
+      dyEvent(as.Date("2016-03-07"), "A (new UDF)", labelLoc = "bottom")
   })
   
   output$traffic_bysearch_dygraph <- renderDygraph({
     bysearch_traffic_data[[input$platform_traffic_bysearch]] %>%
-      logscale(input$platform_traffic_bysearch_log) %>%
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_bysearch)) %>%
       polloi::subset_by_date_range(time_frame_range(input$traffic_bysearch_timeframe, input$traffic_bysearch_timeframe_daterange)) %>%
       polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
                            title = "Pageviews from external search engines, broken down by engine") %>%
-      dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always")
+      dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always") %>%
+      dyAxis("y", logscale = input$platform_traffic_bysearch_log) %>%
+      dyRangeSelector(fillColor = "", strokeColor = "")
   })
   
   # Check datasets for missing data and notify user which datasets are missing data (if any)
