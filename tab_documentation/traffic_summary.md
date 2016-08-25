@@ -11,6 +11,7 @@ This dashboard simply looks at, very broadly, where our requests are coming from
 Outages and notes
 ------
 - **A**: We switched to a finalized version of the UDF that extracts internal traffic (see [T130083](https://phabricator.wikimedia.org/T130083))
+- **B**: On 25 August 2016 we patched the UDF to also look for [Duck Duck Go](https://duckduckgo.com) when it processes referer data. That referreral data was deleted and backfilled from 26 June 2016. See [T143287](https://phabricator.wikimedia.org/T143287) for more details.
 
 Questions, bug reports, and feature suggestions
 ------

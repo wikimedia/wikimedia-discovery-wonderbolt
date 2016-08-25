@@ -20,9 +20,10 @@ shinyServer(function(input, output){
       polloi::subset_by_date_range(time_frame_range(input$traffic_summary_timeframe, input$traffic_summary_timeframe_daterange)) %>%
       polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
                            title = "Sources of page views (e.g. search engines and internal referers)") %>%
-      dyLegend(labelsDiv = "traffic_summary_legend", show = "always") %>%
+      dyLegend(labelsDiv = "traffic_summary_legend", show = "always", showZeroValues = FALSE) %>%
       dyRangeSelector %>%
-      dyEvent(as.Date("2016-03-07"), "A (new UDF)", labelLoc = "bottom")
+      dyEvent(as.Date("2016-03-07"), "A (new UDF)", labelLoc = "bottom") %>%
+      dyEvent(as.Date("2016-06-26"), "B (DuckDuckGo)", labelLoc = "bottom")
   })
   
   output$traffic_bysearch_dygraph <- renderDygraph({
@@ -31,9 +32,10 @@ shinyServer(function(input, output){
       polloi::subset_by_date_range(time_frame_range(input$traffic_bysearch_timeframe, input$traffic_bysearch_timeframe_daterange)) %>%
       polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
                            title = "Pageviews from external search engines, broken down by engine") %>%
-      dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always") %>%
+      dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always", showZeroValues = FALSE) %>%
       dyAxis("y", logscale = input$platform_traffic_bysearch_log) %>%
-      dyRangeSelector(fillColor = "", strokeColor = "")
+      dyRangeSelector(fillColor = "", strokeColor = "") %>%
+      dyEvent(as.Date("2016-06-26"), "A (DuckDuckGo)", labelLoc = "bottom")
   })
   
   # Check datasets for missing data and notify user which datasets are missing data (if any)
