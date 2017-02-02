@@ -1,48 +1,45 @@
-library(polloi)
-library(data.table)
+library(magrittr)
 
 # Read in the traffic data
 read_traffic <- function() {
-  
+
   # Read in the initial data.
-  data <- polloi::read_dataset(path = "external_traffic/referer_data.tsv")
-  
-  # Deduplicate
-  # data <- data[!duplicated(data[,1:(ncol(data) - 1), with=FALSE], fromLast = TRUE)]
-  # Not sure what happened between 2016-02-04 and 2016-03-06 that caused the pageviews to
-  # come out split.
-  
-  # Format
-  data$is_search <- ifelse(data$is_search, "Referred by search", "Not referred by search")
-  data$search_engine[data$search_engine == "none"] <- "Not referred by search"
-  data$referer_class[data$referer_class == "none"] <- "none (direct)"
-  data$referer_class[data$referer_class == "external (search engine)"] <- "search engine"
-  data$referer_class[data$referer_class == "external"] <- "external but not search engine"
-  data <- as.data.table(data)
-  
+  data <- polloi::read_dataset(path = "discovery/external_traffic/referer_data.tsv", col_types = "Dlccci") %>%
+    dplyr::filter(!is.na(referer_class), !is.na(pageviews)) %>%
+    dplyr::mutate(
+      search_engine = dplyr::if_else(search_engine == "none", "Not referred by search", search_engine),
+      referer_class = forcats::fct_recode(
+        referer_class,
+        `None (direct)` = "none",
+        `Search engine` = "external (search engine)",
+        `External (but not search engine)` = "external",
+        Internal = "internal",
+        Unknown = "unknown"
+      )
+    ) %>%
+    data.table::as.data.table()
+
   # Write out the overall values for traffic
-  holding <- data[, j = list(pageviews = sum(pageviews)),
+  interim <- data[, j = list(pageviews = sum(pageviews)),
                   by = c("date", "referer_class", "access_method")]
-  holding <- split(holding, f = holding$access_method)
-  holding$total <- data[,j = list(pageviews = sum(pageviews)),
+  interim <- split(interim, f = interim$access_method)
+  interim$total <- data[,j = list(pageviews = sum(pageviews)),
                         by = c("date", "referer_class")]
-  names(holding) <- c("Desktop", "Mobile Web", "All")
-  summary_traffic_data <<- lapply(holding, function(x){
-    return(reshape2::dcast(x, formula = date ~ referer_class, fun.aggregate = sum))
-  })
-  
+  names(interim) <- c("Desktop", "Mobile Web", "All")
+  summary_traffic_data <<- lapply(interim, tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
+
   # Generate per-engine values
-  holding <- data[which(data$referer_class == "search engine"),
+  interim <- data[is_search == TRUE,
                   j = list(pageviews = sum(pageviews)),
                   by = c("date", "search_engine", "access_method")]
-  holding <- split(holding, f = holding$access_method)
-  holding$all <- data[which(data$referer_class == "search engine"),
-                      j = list(pageviews = sum(pageviews)),
-                      by = c("date", "search_engine")]
-  names(holding) <- c("Desktop", "Mobile Web", "All")
-  bysearch_traffic_data <<- lapply(holding, function(x){
-    return(reshape2::dcast(x, formula = date ~ search_engine, fun.aggregate = sum))
-  })
-  
+  interim <- split(interim, f = interim$access_method)
+  interim$total <- data[is_search == TRUE,
+                        j = list(pageviews = sum(pageviews)),
+                        by = c("date", "search_engine")]
+  names(interim) <- c("Desktop", "Mobile Web", "All")
+  bysearch_traffic_data <<- interim %>%
+    lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
+    lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
+
   return(invisible())
 }
