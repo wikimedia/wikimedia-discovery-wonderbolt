@@ -7,12 +7,12 @@ source("utils.R")
 existing_date <- Sys.Date() - 1
 
 function(input, output, session) {
-  
+
   if (Sys.Date() != existing_date) {
     read_traffic()
     existing_date <<- Sys.Date()
   }
-  
+
   output$traffic_summary_dygraph <- renderDygraph({
     summary_traffic_data[[input$platform_traffic_summary]] %>%
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_summary)) %>%
@@ -21,9 +21,10 @@ function(input, output, session) {
       dyLegend(labelsDiv = "traffic_summary_legend", show = "always", showZeroValues = FALSE) %>%
       dyRangeSelector %>%
       dyEvent(as.Date("2016-03-07"), "A (new UDF)", labelLoc = "bottom") %>%
-      dyEvent(as.Date("2016-06-26"), "B (DuckDuckGo)", labelLoc = "bottom")
+      dyEvent(as.Date("2016-06-26"), "B (DuckDuckGo)", labelLoc = "bottom") %>%
+      dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
   })
-  
+
   output$traffic_bysearch_dygraph <- renderDygraph({
     bysearch_traffic_data[[input$platform_traffic_bysearch]] %>%
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_bysearch)) %>%
@@ -32,9 +33,10 @@ function(input, output, session) {
       dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always", showZeroValues = FALSE) %>%
       dyAxis("y", logscale = input$platform_traffic_bysearch_log) %>%
       dyRangeSelector(fillColor = "", strokeColor = "") %>%
-      dyEvent(as.Date("2016-06-26"), "A (DuckDuckGo)", labelLoc = "bottom")
+      dyEvent(as.Date("2016-06-26"), "A (DuckDuckGo)", labelLoc = "bottom") %>%
+      dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
   })
-  
+
   # Check datasets for missing data and notify user which datasets are missing data (if any)
   output$message_menu <- renderMenu({
     notifications <- list(
@@ -43,5 +45,5 @@ function(input, output, session) {
     notifications <- notifications[!sapply(notifications, is.null)]
     return(dropdownMenu(type = "notifications", .list = notifications))
   })
-  
+
 }
