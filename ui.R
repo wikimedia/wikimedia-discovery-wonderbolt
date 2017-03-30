@@ -38,7 +38,10 @@ function(request) {
         tabItem(tabName = "traffic_by_engine",
                 fluidRow(
                   column(selectizeInput(inputId = "platform_traffic_bysearch", label = "Platform", choices = c("All", "Desktop", "Mobile Web")), width = 2),
-                  column(HTML("<label class = \"control-label\" style = \"margin-bottom:-30px;\">Scale</label>"), checkboxInput("platform_traffic_bysearch_log", label = "Use Log scale", value = FALSE), width = 2),
+                  column(HTML("<label class = \"control-label\" style = \"margin-bottom:-30px;\">Scale</label>"),
+                         conditionalPanel("!input.platform_traffic_bysearch_prop", checkboxInput("platform_traffic_bysearch_log", label = "Use Log scale", value = FALSE)),
+                         conditionalPanel("!input.platform_traffic_bysearch_log", checkboxInput("platform_traffic_bysearch_prop", label = "Use Proportion", value = FALSE)),
+                         width = 2),
                   column(polloi::smooth_select("smoothing_traffic_bysearch"), width = 3),
                   column(div(id = "traffic_bysearch_legend", style = "text-align: right;"), width = 5)),
                 dygraphOutput("traffic_bysearch_dygraph"),

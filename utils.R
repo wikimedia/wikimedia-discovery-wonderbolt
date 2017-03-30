@@ -22,8 +22,9 @@ read_traffic <- function() {
   # Write out the overall values for traffic
   interim <- data[, j = list(pageviews = sum(pageviews)),
                   by = c("date", "referer_class", "access_method")]
-  interim <- split(interim, f = interim$access_method)
-  interim$total <- data[,j = list(pageviews = sum(pageviews)),
+  interim <- split(interim, f = interim$access_method) %>%
+    lapply(dplyr::select_, .dots = list(quote(-access_method))) # fixes smoothing
+  interim$total <- data[, j = list(pageviews = sum(pageviews)),
                         by = c("date", "referer_class")]
   names(interim) <- c("Desktop", "Mobile Web", "All")
   summary_traffic_data <<- lapply(interim, tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
@@ -32,12 +33,21 @@ read_traffic <- function() {
   interim <- data[is_search == TRUE,
                   j = list(pageviews = sum(pageviews)),
                   by = c("date", "search_engine", "access_method")]
-  interim <- split(interim, f = interim$access_method)
+  interim <- split(interim, f = interim$access_method) %>%
+    lapply(dplyr::select_, .dots = list(quote(-access_method))) # fixes smoothing
   interim$total <- data[is_search == TRUE,
                         j = list(pageviews = sum(pageviews)),
                         by = c("date", "search_engine")]
   names(interim) <- c("Desktop", "Mobile Web", "All")
   bysearch_traffic_data <<- interim %>%
+    lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
+    lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
+
+  # Proportion
+  interim <- interim %>%
+    lapply(dplyr::group_by, date) %>%
+    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews))
+  bysearch_traffic_data_prop <<- interim %>%
     lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
     lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
 

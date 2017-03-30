@@ -19,20 +19,24 @@ function(input, output, session) {
       polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
                            title = "Sources of page views (e.g. search engines and internal referers)") %>%
       dyLegend(labelsDiv = "traffic_summary_legend", show = "always", showZeroValues = FALSE) %>%
-      dyRangeSelector %>%
+      dyRangeSelector(retainDateWindow = TRUE) %>%
       dyEvent(as.Date("2016-03-07"), "A (new UDF)", labelLoc = "bottom") %>%
       dyEvent(as.Date("2016-06-26"), "B (DuckDuckGo)", labelLoc = "bottom") %>%
       dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
   })
 
   output$traffic_bysearch_dygraph <- renderDygraph({
-    bysearch_traffic_data[[input$platform_traffic_bysearch]] %>%
+    input$platform_traffic_bysearch_prop %>%
+      polloi::data_select(bysearch_traffic_data_prop[[input$platform_traffic_bysearch]],
+                          bysearch_traffic_data[[input$platform_traffic_bysearch]]) %>%
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_bysearch)) %>%
-      polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
+      polloi::make_dygraph(xlab = "Date", ylab = ifelse(input$platform_traffic_bysearch_prop, "Pageview Share (%)", "Pageviews"),
                            title = "Pageviews from external search engines, broken down by engine") %>%
       dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always", showZeroValues = FALSE) %>%
       dyAxis("y", logscale = input$platform_traffic_bysearch_log) %>%
-      dyRangeSelector(fillColor = "", strokeColor = "") %>%
+      dyRangeSelector(fillColor = ifelse(input$platform_traffic_bysearch_prop, "", "#A7B1C4"),
+                      strokeColor = ifelse(input$platform_traffic_bysearch_prop, "", "#808FAB"),
+                      retainDateWindow = TRUE) %>%
       dyEvent(as.Date("2016-06-26"), "A (DuckDuckGo)", labelLoc = "bottom") %>%
       dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
   })
