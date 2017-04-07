@@ -30,8 +30,12 @@ function(request) {
         tabItem(tabName = "traffic_summary",
                 fluidRow(
                   column(selectizeInput(inputId = "platform_traffic_summary", label = "Platform", choices = c("All", "Desktop", "Mobile Web")), width = 2),
+                  column(HTML("<label class = \"control-label\" style = \"margin-bottom:-30px;\">Scale</label>"),
+                         conditionalPanel("!input.platform_traffic_summary_prop", checkboxInput("platform_traffic_summary_log", label = "Use Log scale", value = FALSE)),
+                         conditionalPanel("!input.platform_traffic_summary_log", checkboxInput("platform_traffic_summary_prop", label = "Use Proportion", value = FALSE)),
+                         width = 2),
                   column(polloi::smooth_select("smoothing_traffic_summary"), width = 3),
-                  column(div(id = "traffic_summary_legend", style = "text-align: right;"), width = 7)),
+                  column(div(id = "traffic_summary_legend", style = "text-align: right;"), width = 5)),
                 dygraphOutput("traffic_summary_dygraph"),
                 includeMarkdown("./tab_documentation/traffic_summary.md")
         ),

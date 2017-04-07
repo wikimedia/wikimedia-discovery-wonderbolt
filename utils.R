@@ -29,6 +29,12 @@ read_traffic <- function() {
   names(interim) <- c("Desktop", "Mobile Web", "All")
   summary_traffic_data <<- lapply(interim, tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
 
+  # Proportion
+  summary_traffic_data_prop <<- interim %>%
+    lapply(dplyr::group_by, date) %>%
+    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews)) %>%
+    lapply(tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
+
   # Generate per-engine values
   interim <- data[is_search == TRUE,
                   j = list(pageviews = sum(pageviews)),
@@ -44,10 +50,9 @@ read_traffic <- function() {
     lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
 
   # Proportion
-  interim <- interim %>%
-    lapply(dplyr::group_by, date) %>%
-    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews))
   bysearch_traffic_data_prop <<- interim %>%
+    lapply(dplyr::group_by, date) %>%
+    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews)) %>%
     lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
     lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
 

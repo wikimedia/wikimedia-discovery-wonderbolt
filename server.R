@@ -14,12 +14,17 @@ function(input, output, session) {
   }
 
   output$traffic_summary_dygraph <- renderDygraph({
-    summary_traffic_data[[input$platform_traffic_summary]] %>%
+    input$platform_traffic_summary_prop %>%
+      polloi::data_select(summary_traffic_data_prop[[input$platform_traffic_summary]],
+                          summary_traffic_data[[input$platform_traffic_summary]]) %>%
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_summary)) %>%
-      polloi::make_dygraph(xlab = "Date", ylab = "Pageviews",
+      polloi::make_dygraph(xlab = "Date", ylab = ifelse(input$platform_traffic_summary_prop, "Pageview Share (%)", "Pageviews"),
                            title = "Sources of page views (e.g. search engines and internal referers)") %>%
       dyLegend(labelsDiv = "traffic_summary_legend", show = "always", showZeroValues = FALSE) %>%
-      dyRangeSelector(retainDateWindow = TRUE) %>%
+      dyAxis("y", logscale = input$platform_traffic_summary_log) %>%
+      dyRangeSelector(fillColor = ifelse(input$platform_traffic_summary_prop, "", "#A7B1C4"),
+                      strokeColor = ifelse(input$platform_traffic_summary_prop, "", "#808FAB"),
+                      retainDateWindow = TRUE) %>%
       dyEvent(as.Date("2016-03-07"), "A (new UDF)", labelLoc = "bottom") %>%
       dyEvent(as.Date("2016-06-26"), "B (DuckDuckGo)", labelLoc = "bottom") %>%
       dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
