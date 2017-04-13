@@ -9,14 +9,30 @@ existing_date <- Sys.Date() - 1
 function(input, output, session) {
 
   if (Sys.Date() != existing_date) {
+    progress <- shiny::Progress$new(session, min = 0, max = 1)
+    on.exit(progress$close())
+    progress$set(message = "Downloading overall pageview counts...", value = 0)
     read_traffic()
+    progress$set(message = "Downloading non-bot pageview counts...", value = 1/2)
+    read_nonbot_traffic()
+    progress$set(message = "Finished downloading datasets.", value = 1)
     existing_date <<- Sys.Date()
   }
 
   output$traffic_summary_dygraph <- renderDygraph({
-    input$platform_traffic_summary_prop %>%
-      polloi::data_select(summary_traffic_data_prop[[input$platform_traffic_summary]],
-                          summary_traffic_data[[input$platform_traffic_summary]]) %>%
+    input$include_automata_traffic_summary %>%
+      polloi::data_select(
+        polloi::data_select(
+          input$platform_traffic_summary_prop,
+          summary_traffic_data_prop[[input$platform_traffic_summary]],
+          summary_traffic_data[[input$platform_traffic_summary]]
+        ),
+        polloi::data_select(
+          input$platform_traffic_summary_prop,
+          summary_traffic_nonbot_data_prop[[input$platform_traffic_summary]],
+          summary_traffic_nonbot_data[[input$platform_traffic_summary]]
+        )
+      ) %>%
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_summary)) %>%
       polloi::make_dygraph(xlab = "Date", ylab = ifelse(input$platform_traffic_summary_prop, "Pageview Share (%)", "Pageviews"),
                            title = "Sources of page views (e.g. search engines and internal referers)") %>%
@@ -31,9 +47,19 @@ function(input, output, session) {
   })
 
   output$traffic_bysearch_dygraph <- renderDygraph({
-    input$platform_traffic_bysearch_prop %>%
-      polloi::data_select(bysearch_traffic_data_prop[[input$platform_traffic_bysearch]],
-                          bysearch_traffic_data[[input$platform_traffic_bysearch]]) %>%
+    input$include_automata_traffic_bysearch %>%
+      polloi::data_select(
+        polloi::data_select(
+          input$platform_traffic_bysearch_prop,
+          bysearch_traffic_data_prop[[input$platform_traffic_bysearch]],
+          bysearch_traffic_data[[input$platform_traffic_bysearch]]
+        ),
+        polloi::data_select(
+          input$platform_traffic_bysearch_prop,
+          bysearch_traffic_nonbot_data_prop[[input$platform_traffic_bysearch]],
+          bysearch_traffic_nonbot_data[[input$platform_traffic_bysearch]]
+        )
+      ) %>%
       polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_traffic_bysearch)) %>%
       polloi::make_dygraph(xlab = "Date", ylab = ifelse(input$platform_traffic_bysearch_prop, "Pageview Share (%)", "Pageviews"),
                            title = "Pageviews from external search engines, broken down by engine") %>%
