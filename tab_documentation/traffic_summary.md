@@ -1,9 +1,9 @@
 Traffic from external search engines - summary
 =======
 
-A key metric in understanding the role external search engines play in Wikipedia's readership and content discovery processes is a very direct one - how many pageviews we get from them. This can be discovered very simply by looking at our request logs.
+A key metric in understanding the role external search engines play in Wikipedia's (and Wikimedia's) readership and content discovery processes is a very direct one - how many pageviews we get from them. This can be discovered very simply by looking at our request logs.
 
-This dashboard simply looks at, very broadly, where our requests are coming from - search engines or something else? It is split up into
+This dashboard simply looks at, very broadly, where our pageviews (across all Wikimedia projects) are coming from - search engines or something else? It is split up into
 "all", "desktop" and "mobile web" platforms - but not apps, since the apps do not log referers.
 
 **Internal** is traffic referred by Wikimedia sites, specifically: mediawiki.org, wikibooks.org, wikidata.org, wikinews.org, wikimedia.org, wikimediafoundation.org, wikipedia.org, wikiquote.org, wikisource.org, wikiversity.org, wikivoyage.org, and wiktionary.org (See [Webrequest source](https://git.wikimedia.org/blob/analytics%2Frefinery%2Fsource.git/master/refinery-core%2Fsrc%2Fmain%2Fjava%2Forg%2Fwikimedia%2Fanalytics%2Frefinery%2Fcore%2FWebrequest.java#L203) for more information.)
