@@ -4,7 +4,7 @@ library(magrittr)
 read_traffic <- function() {
 
   # Read in the initial data.
-  data <- polloi::read_dataset(path = "discovery/external_traffic/referer_data.tsv", col_types = "Dlccci") %>%
+  data <- polloi::read_dataset(path = "discovery/metrics/external_traffic/referer_data.tsv", col_types = "Dlccci") %>%
     dplyr::filter(!is.na(referer_class), !is.na(pageviews)) %>%
     dplyr::mutate(
       search_engine = dplyr::if_else(search_engine == "none", "Not referred by search", search_engine),
@@ -63,7 +63,7 @@ read_traffic <- function() {
 read_nonbot_traffic <- function() {
 
   # Read in the initial data.
-  data <- polloi::read_dataset(path = "discovery/external_traffic/referer_nonbot_data.tsv", col_types = "Dlccci") %>%
+  data <- polloi::read_dataset(path = "discovery/metrics/external_traffic/referer_nonbot_data.tsv", col_types = "Dlccci") %>%
     dplyr::filter(!is.na(referer_class), !is.na(pageviews)) %>%
     dplyr::mutate(
       search_engine = dplyr::if_else(search_engine == "none", "Not referred by search", search_engine),
