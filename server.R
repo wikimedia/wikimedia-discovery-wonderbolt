@@ -37,6 +37,7 @@ function(input, output, session) {
       polloi::make_dygraph(xlab = "Date", ylab = ifelse(input$platform_traffic_summary_prop, "Pageview Share (%)", "Pageviews"),
                            title = "Sources of page views (e.g. search engines and internal referers)") %>%
       dyLegend(labelsDiv = "traffic_summary_legend", show = "always", showZeroValues = FALSE) %>%
+      dyAxis("x", axisLabelFormatter = polloi::custom_axis_formatter, axisLabelWidth = 70) %>%
       dyAxis("y", logscale = input$platform_traffic_summary_log) %>%
       dyRangeSelector(fillColor = ifelse(input$platform_traffic_summary_prop, "", "#A7B1C4"),
                       strokeColor = ifelse(input$platform_traffic_summary_prop, "", "#808FAB"),
@@ -64,6 +65,7 @@ function(input, output, session) {
       polloi::make_dygraph(xlab = "Date", ylab = ifelse(input$platform_traffic_bysearch_prop, "Pageview Share (%)", "Pageviews"),
                            title = "Pageviews from external search engines, broken down by engine") %>%
       dyLegend(labelsDiv = "traffic_bysearch_legend", show = "always", showZeroValues = FALSE) %>%
+      dyAxis("x", axisLabelFormatter = polloi::custom_axis_formatter, axisLabelWidth = 70) %>%
       dyAxis("y", logscale = input$platform_traffic_bysearch_log) %>%
       dyRangeSelector(fillColor = ifelse(input$platform_traffic_bysearch_prop, "", "#A7B1C4"),
                       strokeColor = ifelse(input$platform_traffic_bysearch_prop, "", "#808FAB"),

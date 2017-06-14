@@ -26,13 +26,13 @@ read_traffic <- function() {
     lapply(dplyr::select_, .dots = list(quote(-access_method))) # fixes smoothing
   interim$total <- data[, j = list(pageviews = sum(pageviews)),
                         by = c("date", "referer_class")]
-  names(interim) <- c("Desktop", "Mobile Web", "All")
+  names(interim) <- c("desktop" = "Desktop", "mobile web" = "Mobile Web", "total" = "All")[names(interim)]
   summary_traffic_data <<- lapply(interim, tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
 
   # Proportion
   summary_traffic_data_prop <<- interim %>%
     lapply(dplyr::group_by, date) %>%
-    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews)) %>%
+    lapply(dplyr::mutate, pageviews = 100 * pageviews / sum(pageviews)) %>%
     lapply(tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
 
   # Generate per-engine values
@@ -44,7 +44,7 @@ read_traffic <- function() {
   interim$total <- data[is_search == TRUE,
                         j = list(pageviews = sum(pageviews)),
                         by = c("date", "search_engine")]
-  names(interim) <- c("Desktop", "Mobile Web", "All")
+  names(interim) <- c("desktop" = "Desktop", "mobile web" = "Mobile Web", "total" = "All")[names(interim)]
   bysearch_traffic_data <<- interim %>%
     lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
     lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
@@ -52,7 +52,7 @@ read_traffic <- function() {
   # Proportion
   bysearch_traffic_data_prop <<- interim %>%
     lapply(dplyr::group_by, date) %>%
-    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews)) %>%
+    lapply(dplyr::mutate, pageviews = 100 * pageviews / sum(pageviews)) %>%
     lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
     lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
 
@@ -72,8 +72,7 @@ read_nonbot_traffic <- function() {
         `None (direct)` = "none",
         `Search engine` = "external (search engine)",
         `External (but not search engine)` = "external",
-        Internal = "internal",
-        Unknown = "unknown"
+        Internal = "internal"
       )
     ) %>%
     data.table::as.data.table()
@@ -85,13 +84,13 @@ read_nonbot_traffic <- function() {
     lapply(dplyr::select_, .dots = list(quote(-access_method))) # fixes smoothing
   interim$total <- data[, j = list(pageviews = sum(pageviews)),
                         by = c("date", "referer_class")]
-  names(interim) <- c("Desktop", "Mobile Web", "All")
+  names(interim) <- c("desktop" = "Desktop", "mobile web" = "Mobile Web", "total" = "All")[names(interim)]
   summary_traffic_nonbot_data <<- lapply(interim, tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
 
   # Proportion
   summary_traffic_nonbot_data_prop <<- interim %>%
     lapply(dplyr::group_by, date) %>%
-    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews)) %>%
+    lapply(dplyr::mutate, pageviews = 100 * pageviews / sum(pageviews)) %>%
     lapply(tidyr::spread, key = "referer_class", value = "pageviews", fill = NA)
 
   # Generate per-engine values
@@ -103,7 +102,7 @@ read_nonbot_traffic <- function() {
   interim$total <- data[is_search == TRUE,
                         j = list(pageviews = sum(pageviews)),
                         by = c("date", "search_engine")]
-  names(interim) <- c("Desktop", "Mobile Web", "All")
+  names(interim) <- c("desktop" = "Desktop", "mobile web" = "Mobile Web", "total" = "All")[names(interim)]
   bysearch_traffic_nonbot_data <<- interim %>%
     lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
     lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
@@ -111,7 +110,7 @@ read_nonbot_traffic <- function() {
   # Proportion
   bysearch_traffic_nonbot_data_prop <<- interim %>%
     lapply(dplyr::group_by, date) %>%
-    lapply(dplyr::mutate, pageviews = 100*pageviews/sum(pageviews)) %>%
+    lapply(dplyr::mutate, pageviews = 100 * pageviews / sum(pageviews)) %>%
     lapply(dplyr::filter_, .dots = list(quote(search_engine != "Not referred by search"))) %>%
     lapply(tidyr::spread, key = "search_engine", value = "pageviews", fill = NA)
 
