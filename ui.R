@@ -61,10 +61,10 @@ function(request) {
                   column(polloi::smooth_select("smoothing_traffic_bysearch"), width = 3)),
                 dygraphOutput("traffic_bysearch_dygraph"),
                 div(id = "traffic_bysearch_legend", style = "text-align: right;"),
-                includeMarkdown("./tab_documentation/traffic_byengine.md")
+                includeMarkdown("./tab_documentation/traffic_by_engine.md")
         )
       )
     ),
 
-    skin = "black", title = "External Search Dashboard | Discovery | Engineering | Wikimedia Foundation")
+    skin = "black", title = "External Search Dashboard | Discovery | Audiences | Wikimedia Foundation")
 }
