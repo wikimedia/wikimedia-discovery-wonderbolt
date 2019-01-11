@@ -77,6 +77,29 @@ read_nonbot_traffic <- function() {
     ) %>%
     data.table::as.data.table()
 
+  # Write out Google ratio
+  interim <- data[i = referer_class %in% c("External (but not search engine)", "Search engine"),
+                  j = list(pageviews = sum(pageviews, na.rm = TRUE)),
+                  by = c("date", "search_engine", "access_method")]
+  interim$referrer <- ifelse(interim$search_engine == "Google",
+                             "Google", "Other external referrer")
+  interim <- interim[, j = list(pageviews = sum(pageviews)),
+          by = c("date", "access_method", "referrer")]
+  interim_all <- interim[, j = list(pageviews = sum(pageviews)),
+                         by = c("date", "referrer")]
+  interim_all$access_method <- "total"
+  interim <- rbind(interim, interim_all)
+  interim$access_method <- c("desktop" = "Desktop", "mobile web" = "Mobile Web", "total" = "All")[interim$access_method]
+  interim <- split(interim, by = "access_method") %>%
+    lapply(dplyr::select_, .dots = list(quote(-access_method)))
+  interim <- lapply(interim, tidyr::spread, key = "referrer", value = "pageviews")
+  interim <- lapply(interim, function(data_subset) {
+    data_subset$Ratio <- data_subset$Google / data_subset$`Other external referrer`
+    data_subset$Proportion <- 100 * data_subset$Google / (data_subset$Google + data_subset$`Other external referrer`)
+    return(data_subset[, c("date", "Ratio", "Proportion")])
+  })
+  google_ratio_nonbot_data <<- interim
+
   # Write out the overall values for traffic
   interim <- data[, j = list(pageviews = sum(pageviews)),
                   by = c("date", "referer_class", "access_method")]
