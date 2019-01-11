@@ -81,10 +81,12 @@ function(input, output, session) {
       { .$metric <- .[[input$metric_google_ratio]]; . } %>%
       .[, c("date", "access_method", "metric"), with = FALSE] %>%
       tidyr::spread(access_method, metric) %>%
+      polloi::smoother(smooth_level = polloi::smooth_switch(input$smoothing_global, input$smoothing_google_ratio)) %>%
       polloi::make_dygraph(xlab = "Date",
                            ylab = ifelse(input$metric_google_ratio == "Proportion", "Google-referred %", "Google / Other external referrers"),
                            title = "Google-referred pageviews in externally referred traffic") %>%
-      dyLegend(show = "always", labelsDiv = "google_ratio_legend")
+      dyLegend(show = "always", labelsDiv = "google_ratio_legend") %>%
+      dyRangeSelector(fillColor = "", retainDateWindow = TRUE)
   })
 
   # Check datasets for missing data and notify user which datasets are missing data (if any)
