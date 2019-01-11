@@ -3,7 +3,7 @@ Google's share of externally referred traffic to Wikimedia sites
 
 Unlike the [search engine breakdown](https://discovery.wmflabs.org/external/#traffic_by_engine) page -- where we can see what proportion of search engine-referred traffic is specifically from Google -- this page compares Google traffic with all externally referred traffic (which includes other search engines). The following metrics -- **calculated from non-bot (agent type is "user") traffic** -- enable us to assess trends in how much of our externally referred traffic is attributable to Google:
 
-- **Ratio** is defined as Google-referred pageviews divided by pageviews referred by other external sources (including other search engines).
+- **Ratio** is defined as Google-referred pageviews divided by pageviews referred by other external sources (including other search engines). For example, Google-referred mobile web traffic is 10-15 *times* greater than mobile web traffic referred by other external sources.
 - **Proportion** is defined as Google's share of all externally referred traffic.
 
 Questions, bug reports, and feature suggestions
