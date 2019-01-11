@@ -73,15 +73,17 @@ function(request) {
                                       choices = c("All", "Desktop", "Mobile Web"),
                                       selected = c("All", "Desktop", "Mobile Web"),
                                       inline = TRUE),
-                   width = 3),
+                   width = 5),
             column(radioButtons("metric_google_ratio", "Metric",
                                 choices = c("Ratio", "Proportion"),
                                 selected = "Proportion",
                                 inline = TRUE),
-                   width = 3)
+                   width = 4),
+            column(polloi::smooth_select("smoothing_google_ratio"), width = 3)
           ),
           dygraphOutput("google_ratio_dygraph"),
-          div(id = "google_ratio_legend", style = "text-align: right;")
+          div(id = "google_ratio_legend", style = "text-align: right;"),
+          includeMarkdown("./tab_documentation/google_ratio.md")
         )
       ) # end tabItems
     ), # end dashboardBody
