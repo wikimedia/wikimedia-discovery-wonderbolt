@@ -74,6 +74,19 @@ function(input, output, session) {
       dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
   })
 
+  output$google_ratio_dygraph <- renderDygraph({
+    req(length(input$platform_google_ratio) > 0)
+    google_ratio_nonbot_data[input$platform_google_ratio] %>%
+      dplyr::bind_rows(.id = "access_method") %>%
+      { .$metric <- .[[input$metric_google_ratio]]; . } %>%
+      .[, c("date", "access_method", "metric"), with = FALSE] %>%
+      tidyr::spread(access_method, metric) %>%
+      polloi::make_dygraph(xlab = "Date",
+                           ylab = ifelse(input$metric_google_ratio == "Proportion", "Google-referred %", "Google / Other external referrers"),
+                           title = "Google-referred pageviews in externally referred traffic") %>%
+      dyLegend(show = "always", labelsDiv = "google_ratio_legend")
+  })
+
   # Check datasets for missing data and notify user which datasets are missing data (if any)
   output$message_menu <- renderMenu({
     notifications <- list(
