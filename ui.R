@@ -89,6 +89,6 @@ function(request) {
     ), # end dashboardBody
 
     skin = "black",
-    title = "External Search Dashboard | Discovery | Audiences | Wikimedia Foundation"
+    title = "External Search Traffic Dashboard | Product Analytics | Wikimedia Foundation"
   ) # end dashboardPage
 }

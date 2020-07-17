@@ -44,7 +44,8 @@ function(input, output, session) {
                       retainDateWindow = TRUE) %>%
       dyEvent(as.Date("2016-03-07"), "A (new UDF)", labelLoc = "bottom") %>%
       dyEvent(as.Date("2016-06-26"), "B (DuckDuckGo)", labelLoc = "bottom") %>%
-      dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
+      dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom") %>%
+      dyEvent(as.Date("2020-05-01"), "U (automated users)", labelLoc = "bottom")
   })
 
   output$traffic_bysearch_dygraph <- renderDygraph({
@@ -71,7 +72,8 @@ function(input, output, session) {
                       strokeColor = ifelse(input$platform_traffic_bysearch_prop, "", "#808FAB"),
                       retainDateWindow = TRUE) %>%
       dyEvent(as.Date("2016-06-26"), "A (DuckDuckGo)", labelLoc = "bottom") %>%
-      dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom")
+      dyEvent(as.Date("2017-01-01"), "R (reportupdater)", labelLoc = "bottom") %>%
+      dyEvent(as.Date("2020-05-01"), "U (automated users)", labelLoc = "bottom")
   })
 
   output$google_ratio_dygraph <- renderDygraph({
